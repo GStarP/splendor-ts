@@ -1,4 +1,4 @@
-import { Coin } from "@/types/enum"
+import { Coin } from "@/backend/enum"
 
 /**
  * 银行
@@ -8,8 +8,24 @@ export class Bank {
   // 六种货币的剩余数量
   storage: number[]
 
-  constructor(n: number = 5, nx: number = 5) {
+  constructor(n: number = 7, nx: number = 5) {
     this.storage = [n, n, n, n, n, nx];
+  }
+
+  addCoins(coins: number[]) {
+    for (let i = 0; i < coins.length; i++) {
+      this.storage[i] += coins[i];
+    }
+  }
+
+  subCoin(coins: number[]) {
+    let enough = true;
+    for (let i = 0; i < coins.length; i++) {
+      enough &&= this.storage[i] >= coins[i];
+    }
+    for (let i = 0; i < coins.length; i++) {
+      this.storage[i] -= coins[i];
+    }
   }
 
 }
@@ -47,8 +63,9 @@ export class Deck {
   // 同时显示数量
   showNum: number
 
-  constructor(cards: Card[][]) {
-    this.cards = cards;
+  constructor() {
+    // TODO 读取卡组信息
+    this.cards = [];
     this.showNum = 4;
   }
 
@@ -99,6 +116,40 @@ export class Player {
       score += card.score
     }
     return score
+  }
+
+}
+
+export class Game {
+
+  // 玩家列表
+  players: Player[]
+  // 银行
+  bank: Bank
+  // 卡组
+  deck: Deck
+  // 获胜分数
+  winScore: number
+
+  // 正在行动的玩家
+  active: number
+
+  constructor(players: Player[] = [], winScore: number = 20) {
+    this.players = players;
+    // 四人及以下时每种货币移除两枚
+    if (this.players.length <= 4) {
+      this.bank = new Bank(5);
+    } else {
+      this.bank = new Bank();
+    }
+    this.deck = new Deck();
+    this.winScore = winScore;
+
+    this.active = 0;
+  }
+
+  nextTurn() {
+    this.active = (this.active + 1) % this.players.length;
   }
 
 }
