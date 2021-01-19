@@ -18,14 +18,19 @@ export class Bank {
     }
   }
 
-  subCoin(coins: number[]) {
+  subCoin(coins: number[]): boolean {
     let enough = true;
     for (let i = 0; i < coins.length; i++) {
       enough &&= this.storage[i] >= coins[i];
+      // 只有当库存大于等于 4 时才能拿取 2 枚同类货币
+      enough &&= coins[i] < 2 || this.storage[i] >= 4;
+      if (!enough)
+        return enough;
     }
     for (let i = 0; i < coins.length; i++) {
       this.storage[i] -= coins[i];
     }
+    return enough;
   }
 
 }
@@ -81,8 +86,12 @@ export class Deck {
     return showCards;
   }
 
+  availableCard(i: number, j: number) {
+    return this.cards.length > i && this.showNum > j;
+  }
+
   removeCard(i: number, j: number) {
-    if (this.cards.length > i && this.cards[i].length > j) {
+    if (this.availableCard(i, j)) {
       this.cards[i].splice(j, 1);
     }
   }
@@ -116,6 +125,18 @@ export class Player {
       score += card.score
     }
     return score
+  }
+
+  addCoins(coins: number[]) {
+    for (let i = 0; i < coins.length; i++) {
+      this.coins[i] += coins[i];
+    }
+  }
+
+  subCoins(coins: number[]) {
+    for (let i = 0; i < coins.length; i++) {
+      this.coins[i] -= coins[i];
+    }
   }
 
 }
