@@ -4,6 +4,7 @@
  */
 
 import { Card, Game, Player } from "./class";
+import { Coin } from "./enum";
 
 let game = new Game();
 
@@ -13,10 +14,19 @@ export function createGame(players: Player[], winScore: number) {
   game = new Game(players, winScore);
 }
 
+// 检测玩家能否购买卡片
 function canBuyCard(player: Player, card: Card): boolean {
   let can = true;
+  let diff = 0;
   for (let i = 0; i < player.coins.length; i++) {
     can = can && player.coins[i] >= card.price[i];
+    if (!can) {
+      diff +=
+        player.coins[i] < card.price[i] ? card.price[i] - player.coins[i] : 0;
+    }
+  }
+  if (!can && player.coins[Coin.X] >= diff) {
+    return true;
   }
   return can;
 }
