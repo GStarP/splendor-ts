@@ -11,11 +11,25 @@ export { game };
 
 export function createGame(players: Player[], winScore: number) {
   game = new Game(players, winScore);
-};
+}
+
+function canBuyCard(player: Player, card: Card): boolean {
+  let can = true;
+  for (let i = 0; i < player.coins.length; i++) {
+    can = can && player.coins[i] >= card.price[i];
+  }
+  return can;
+}
+
+/**
+ * 四种行动
+ */
 
 export function getCoin(playerIdx: number, coins: number[]) {
   if (game.bank.subCoin(coins)) {
     game.players[playerIdx].addCoins(coins);
+    // 拿取货币成功, 行动结束
+    game.nextTurn();
   }
 }
 
@@ -27,6 +41,8 @@ export function buyCard(playerIdx: number, cardX: number, cardY: number) {
       game.deck.removeCard(cardX, cardY);
       game.players[playerIdx].cards.push(card);
       game.bank.addCoins(card.price);
+      // 购买卡片成功, 行动结束
+      game.nextTurn();
     }
   }
 }
@@ -39,12 +55,14 @@ export function saveCard(playerIdx: number, cardX: number, cardY: number) {
       game.deck.removeCard(cardX, cardY);
       game.players[playerIdx].savedCards.push(card);
       // 拿取万能币
-      const xcoin = []
+      const xcoin = [];
       for (let i = 0; i < card.price.length; i++) {
         xcoin.push(0);
       }
       xcoin[xcoin.length - 1] = 1;
       getCoin(playerIdx, xcoin);
+      // 扣押卡牌成功, 行动结束
+      game.nextTurn();
     }
   }
 }
@@ -57,14 +75,8 @@ export function buySavedCard(playerIdx: number, cardX: number) {
       game.players[playerIdx].savedCards.splice(cardX, 1);
       game.players[playerIdx].cards.push(card);
       game.bank.addCoins(card.price);
+      // 购买扣押卡牌成功, 行动结束
+      game.nextTurn();
     }
   }
-}
-
-function canBuyCard(player: Player, card: Card): boolean {
-  let can = true;
-  for (let i = 0; i < player.coins.length; i++) {
-    can &&= player.coins[i] >= card.price[i];
-  }
-  return can;
 }

@@ -1,14 +1,13 @@
-import { Coin } from "@/backend/enum"
+import { Coin } from "@/backend/enum";
 
 /**
  * 银行
  */
 export class Bank {
-
   // 六种货币的剩余数量
-  storage: number[]
+  storage: number[];
 
-  constructor(n: number = 7, nx: number = 5) {
+  constructor(n = 7, nx = 5) {
     this.storage = [n, n, n, n, n, nx];
   }
 
@@ -21,33 +20,30 @@ export class Bank {
   subCoin(coins: number[]): boolean {
     let enough = true;
     for (let i = 0; i < coins.length; i++) {
-      enough &&= this.storage[i] >= coins[i];
+      enough = enough && this.storage[i] >= coins[i];
       // 只有当库存大于等于 4 时才能拿取 2 枚同类货币
-      enough &&= coins[i] < 2 || this.storage[i] >= 4;
-      if (!enough)
-        return enough;
+      enough = enough && (coins[i] < 2 || this.storage[i] >= 4);
+      if (!enough) return enough;
     }
     for (let i = 0; i < coins.length; i++) {
       this.storage[i] -= coins[i];
     }
     return enough;
   }
-
 }
 
 /**
  * 卡牌
  */
 export class Card {
-
   // 分数
-  score: number
+  score: number;
   // 需要的货币
-  price: number[]
+  price: number[];
   // 提供的货币
-  value: Coin
+  value: Coin;
   // 卡牌名称
-  name: string
+  name: string;
 
   constructor(score: number, price: number[], value: Coin, name: string) {
     this.score = score;
@@ -55,18 +51,16 @@ export class Card {
     this.value = value;
     this.name = name;
   }
-
 }
 
 /**
  * 卡组
  */
 export class Deck {
-
   // 剩余卡牌
-  cards: Card[][]
+  cards: Card[][];
   // 同时显示数量
-  showNum: number
+  showNum: number;
 
   constructor() {
     // TODO 读取卡组信息
@@ -75,12 +69,12 @@ export class Deck {
   }
 
   getShowCards(): Card[][] {
-    const showCards = []
+    const showCards = [];
     for (const heap of this.cards) {
       if (heap.length <= this.showNum) {
         showCards.push(heap);
       } else {
-        showCards.push(heap.slice(0, this.showNum))
+        showCards.push(heap.slice(0, this.showNum));
       }
     }
     return showCards;
@@ -95,22 +89,20 @@ export class Deck {
       this.cards[i].splice(j, 1);
     }
   }
-
 }
 
 /**
  * 玩家
  */
 export class Player {
-
   // 名称
-  name: string
+  name: string;
   // 持有货币
-  coins: number[]
+  coins: number[];
   // 持有卡牌
-  cards: Card[]
+  cards: Card[];
   // 扣押卡牌
-  savedCards: Card[]
+  savedCards: Card[];
 
   constructor(name: string) {
     this.name = name;
@@ -122,9 +114,9 @@ export class Player {
   getScore(): number {
     let score = 0;
     for (const card of this.cards) {
-      score += card.score
+      score += card.score;
     }
-    return score
+    return score;
   }
 
   addCoins(coins: number[]) {
@@ -138,24 +130,22 @@ export class Player {
       this.coins[i] -= coins[i];
     }
   }
-
 }
 
 export class Game {
-
   // 玩家列表
-  players: Player[]
+  players: Player[];
   // 银行
-  bank: Bank
+  bank: Bank;
   // 卡组
-  deck: Deck
+  deck: Deck;
   // 获胜分数
-  winScore: number
+  winScore: number;
 
   // 正在行动的玩家
-  active: number
+  active: number;
 
-  constructor(players: Player[] = [], winScore: number = 20) {
+  constructor(players: Player[] = [], winScore = 20) {
     this.players = players;
     // 四人及以下时每种货币移除两枚
     if (this.players.length <= 4) {
@@ -172,5 +162,4 @@ export class Game {
   nextTurn() {
     this.active = (this.active + 1) % this.players.length;
   }
-
 }

@@ -17,11 +17,11 @@ export enum Coin {
  */
 export enum CoinColor {
   // 五种货币
-  R = 'red',
-  O = 'orange',
-  Y = 'yellow',
-  G = 'green',
-  B = 'blue',
+  R = "red",
+  O = "orange",
+  Y = "yellow",
+  G = "green",
+  B = "blue",
   // 通用货币
-  X = 'black'
+  X = "black"
 }
