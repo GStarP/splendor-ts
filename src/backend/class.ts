@@ -92,6 +92,24 @@ export class Deck {
 }
 
 /**
+ * 奖励卡
+ */
+export class Bonus {
+  // 分数
+  score: number;
+  // 条件
+  price: number[];
+  // 名称
+  name: string;
+
+  constructor(score: number, price: number[], name: string) {
+    this.score = score;
+    this.price = price;
+    this.name = name;
+  }
+}
+
+/**
  * 玩家
  */
 export class Player {
@@ -103,18 +121,24 @@ export class Player {
   cards: Card[];
   // 扣押卡牌
   savedCards: Card[];
+  // 持有奖励卡
+  bonusList: Bonus[];
 
   constructor(name: string) {
     this.name = name;
     this.coins = [0, 0, 0, 0, 0, 0];
     this.cards = [];
     this.savedCards = [];
+    this.bonusList = [];
   }
 
   getScore(): number {
     let score = 0;
     for (const card of this.cards) {
       score += card.score;
+    }
+    for (const bonus of this.bonusList) {
+      score += bonus.score;
     }
     return score;
   }
@@ -139,6 +163,8 @@ export class Game {
   bank: Bank;
   // 卡组
   deck: Deck;
+  // 奖励卡组
+  bonusDeck: Bonus[];
   // 获胜分数
   winScore: number;
 
@@ -147,13 +173,15 @@ export class Game {
 
   constructor(players: Player[] = [], winScore = 20) {
     this.players = players;
-    // 四人及以下时每种货币移除两枚
-    if (this.players.length <= 4) {
+    // 三人及以下时每种货币移除两枚
+    if (this.players.length < 4) {
       this.bank = new Bank(5);
     } else {
       this.bank = new Bank();
     }
     this.deck = new Deck();
+    // TODO 随机初始化奖励卡
+    this.bonusDeck = [];
     this.winScore = winScore;
 
     this.active = 0;

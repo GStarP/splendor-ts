@@ -21,6 +21,25 @@ function canBuyCard(player: Player, card: Card): boolean {
   return can;
 }
 
+// 检测玩家获得新卡片后能否获取奖励卡
+function checkBonus(playerIdx: number) {
+  let can = true;
+  const player = game.players[playerIdx];
+  const cardValues = [0, 0, 0, 0, 0];
+  for (const card of player.cards) {
+    cardValues[card.value]++;
+  }
+  for (let i = 0; i < game.bonusDeck.length; i++) {
+    for (let j = 0; j < cardValues.length; j++) {
+      can = can && cardValues[j] >= game.bonusDeck[i].price[j];
+    }
+    if (can) {
+      const bonus = game.bonusDeck.splice(i, 1)[0];
+      player.bonusList.push(bonus);
+    }
+  }
+}
+
 /**
  * 四种行动
  */
@@ -41,6 +60,7 @@ export function buyCard(playerIdx: number, cardX: number, cardY: number) {
       game.deck.removeCard(cardX, cardY);
       game.players[playerIdx].cards.push(card);
       game.bank.addCoins(card.price);
+      checkBonus(playerIdx);
       // 购买卡片成功, 行动结束
       game.nextTurn();
     }
@@ -75,6 +95,7 @@ export function buySavedCard(playerIdx: number, cardX: number) {
       game.players[playerIdx].savedCards.splice(cardX, 1);
       game.players[playerIdx].cards.push(card);
       game.bank.addCoins(card.price);
+      checkBonus(playerIdx);
       // 购买扣押卡牌成功, 行动结束
       game.nextTurn();
     }
