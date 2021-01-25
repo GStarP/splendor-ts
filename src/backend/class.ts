@@ -1,4 +1,5 @@
 import { Coin } from "@/backend/enum";
+import cards from "./cards";
 
 /**
  * 银行
@@ -42,14 +43,11 @@ export class Card {
   price: number[];
   // 提供的货币
   value: Coin;
-  // 卡牌名称
-  name: string;
 
-  constructor(score: number, price: number[], value: Coin, name: string) {
+  constructor(score: number, price: number[], value: Coin) {
     this.score = score;
     this.price = price;
     this.value = value;
-    this.name = name;
   }
 }
 
@@ -63,9 +61,12 @@ export class Deck {
   showNum: number;
 
   constructor() {
-    // TODO 读取卡组信息
-    this.cards = [];
+    this.cards = this.initializeCards();
     this.showNum = 4;
+  }
+
+  initializeCards(): Card[][] {
+    return cards;
   }
 
   getShowCards(): Card[][] {
@@ -99,13 +100,10 @@ export class Bonus {
   score: number;
   // 条件
   price: number[];
-  // 名称
-  name: string;
 
-  constructor(score: number, price: number[], name: string) {
+  constructor(score: number, price: number[]) {
     this.score = score;
     this.price = price;
-    this.name = name;
   }
 }
 

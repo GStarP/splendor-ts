@@ -6,7 +6,7 @@ export enum Coin {
   R = 0,
   O = 1,
   Y = 2,
-  G = 3,
+  P = 3,
   B = 4,
   // 通用货币
   X = 5
@@ -14,14 +14,13 @@ export enum Coin {
 
 /**
  * 货币颜色
+ * 红, 橙, 黄, 紫, 蓝, 灰
  */
-export enum CoinColor {
-  // 五种货币
-  R = "red",
-  O = "orange",
-  Y = "yellow",
-  G = "green",
-  B = "blue",
-  // 通用货币
-  X = "black"
-}
+export const CoinColor = [
+  "#F44336",
+  "#F57C00",
+  "#FFC107",
+  "#9C27B0",
+  "#2196F3",
+  "#9E9E9E"
+];
